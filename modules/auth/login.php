@@ -1,198 +1,335 @@
 <?php
 if (!defined('_AUTHEN')) {
-    die('Truy cập không hợp lệ');
+  die('Truy cập không hợp lệ');
 }
 
-// Nếu đã login, redirect về dashboard
-if (isLoggedIn()) {
-    redirect(url('dashboard', 'index'));
-}
+// Xử lý đăng nhập
+$tb_dang_nhap = "";
+$error_class = "danger";
 
-$errors = [];
-$oldData = [];
+if (isset($_POST['btn_dang_nhap'])) {
 
-// Xử lý form submit
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    
-    // Lấy dữ liệu từ form
-    $username = trim($_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
-    
-    // Lưu lại old data để hiển thị lại form
-    $oldData['username'] = $username;
-    
-    // Validation
-    if (empty($username)) {
-        $errors['username'] = 'Vui lòng nhập email hoặc tên đăng nhập';
-    }
-    
-    if (empty($password)) {
-        $errors['password'] = 'Vui lòng nhập mật khẩu';
-    }
-    
-    // Nếu không có lỗi validation, tiến hành đăng nhập
-    if (empty($errors)) {
-        
-        // Query tìm user (có thể login bằng username hoặc email)
-        $sql = "SELECT t.*, lt.tenLoaiTK 
-                FROM taikhoan t 
-                LEFT JOIN loaitaikhoan lt ON t.idLoaiTK = lt.idLoaiTK
-                WHERE (t.tenDangNhap = :username OR t.email = :username)
-                LIMIT 1";
-        
-        $user = db_query($sql, ['username' => $username]);
-        
-        if ($user && count($user) > 0) {
-            $user = $user[0];
-            
-            // Kiểm tra trạng thái tài khoản
-            if ($user['trangThai'] == 'LOCKED') {
-                $errors['general'] = 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.';
-            } 
-            else if ($user['trangThai'] == 'INACTIVE') {
-                $errors['general'] = 'Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email.';
-            }
-            // Verify password
-            else if (!password_verify($password, $user['matKhau'])) {
-                $errors['password'] = 'Mật khẩu không chính xác';
-            }
-            // Đăng nhập thành công
-            else {
-                // Set session
-                setUserSession($user);
-                
-                // Set flash message
-                setFlash('login_success', 'Đăng nhập thành công! Chào mừng ' . $user['hoTen'], 'success');
-                
-                // Redirect về dashboard
-                redirect(url('dashboard', 'index'));
-            }
-            
+  $ten_tk = isset($_POST['tendangnhap']) ? chuan_hoa_chuoi_sql($conn, $_POST['tendangnhap']) : "";
+  $mat_khau = isset($_POST['matkhau']) ? $_POST['matkhau'] : "";
+
+  if ($ten_tk == "" || $mat_khau == "") {
+    $tb_dang_nhap = "Vui lòng nhập đầy đủ thông tin!!";
+  } else {
+
+    $row = truy_van_mot_ban_ghi($conn, 'taikhoan', 'tenTK', $ten_tk);
+
+    if ($row) {
+      if ($mat_khau == $row['matKhau']) {
+
+        if ($row['isActive'] == 0) {
+          $tb_dang_nhap = "Tài khoản của bạn đã bị khóa.";
         } else {
-            $errors['username'] = 'Tài khoản không tồn tại';
+          $_SESSION['user_id'] = $row['idTK'];
+          $_SESSION['user_name'] = $row['tenTK'];
+          $_SESSION['role'] = $row['idLoaiTK'];
+
+          header("Location: " . _HOST_URL . "?module=dashboard&action=index");
+          exit();
         }
+      } else {
+        $tb_dang_nhap = "Mật khẩu không chính xác";
+      }
+    } else {
+      $tb_dang_nhap = "Tên đăng nhập không tồn tại";
     }
+  }
 }
-
 ?>
-
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Đăng nhập - Hệ thống quản lý NCKH</title>
-    
-    <!-- Fonts -->
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
-    
-    <!-- Font Awesome Icons -->
-    <link href="<?php echo _HOST_URL; ?>/template/assets/css/nucleo-icons.css" rel="stylesheet" />
-    <link href="<?php echo _HOST_URL; ?>/template/assets/css/nucleo-svg.css" rel="stylesheet" />
-    
-    <!-- Material Dashboard CSS -->
-    <link id="pagestyle" href="<?php echo _HOST_URL; ?>/template/assets/css/material-dashboard.min.css" rel="stylesheet" />
-    
-    <style>
-        .bg-gradient-primary {
-            background-image: linear-gradient(195deg, #ec407a 0%, #d81b60 100%);
-        }
-        .form-control:focus {
-            border-color: #e91e63;
-            box-shadow: 0 0 0 2px rgba(233, 30, 99, .25);
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="<?= _HOST_URL_TEMPLATES ?>/assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="<?= _HOST_URL_TEMPLATES ?>/assets/img/favicon.png">
+  <title>Đăng nhập - Hệ thống quản lý sự kiện</title>
+
+  <!-- Fonts and icons -->
+  <link rel="stylesheet" type="text/css"
+    href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
+  <link href="<?= _HOST_URL_TEMPLATES ?>/assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="<?= _HOST_URL_TEMPLATES ?>/assets/css/nucleo-svg.css" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link id="pagestyle" href="<?= _HOST_URL_TEMPLATES ?>/assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
+
+  <style>
+    .login-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-bg::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: moveBackground 20s linear infinite;
+    }
+
+    @keyframes moveBackground {
+      0% {
+        transform: translate(0, 0);
+      }
+
+      100% {
+        transform: translate(50px, 50px);
+      }
+    }
+
+    .login-illustration {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%),
+        url('<?= _HOST_URL_TEMPLATES ?>/assets/img/illustrations/illustration-signin.jpg');
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .login-illustration::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      background: linear-gradient(to top, rgba(102, 126, 234, 0.4), transparent);
+    }
+
+    .login-card {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .floating-icon {
+      position: absolute;
+      font-size: 3rem;
+      opacity: 0.15;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .floating-icon:nth-child(1) {
+      top: 10%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .floating-icon:nth-child(2) {
+      top: 60%;
+      left: 20%;
+      animation-delay: 2s;
+    }
+
+    .floating-icon:nth-child(3) {
+      top: 30%;
+      left: 80%;
+      animation-delay: 4s;
+    }
+
+    .floating-icon:nth-child(4) {
+      top: 80%;
+      left: 70%;
+      animation-delay: 1s;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    .input-group-outline input:focus {
+      border-color: #667eea;
+    }
+
+    .btn-login {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    @media (max-width: 991px) {
+      .login-illustration {
+        display: none !important;
+      }
+
+      .login-card {
+        margin-top: 2rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .card-header h4 {
+        font-size: 1.5rem;
+      }
+
+      .navbar-brand {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
 </head>
 
-<body class="bg-gray-200">
-    <main class="main-content mt-0">
-        <div class="page-header align-items-start min-vh-100" style="background-image: url('https://images.unsplash.com/photo-1497294815431-9365093b7331?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1950&q=80');">
-            <span class="mask bg-gradient-dark opacity-6"></span>
-            
-            <div class="container my-auto">
-                <div class="row">
-                    <div class="col-lg-4 col-md-8 col-12 mx-auto">
-                        <div class="card z-index-0 fadeIn3 fadeInBottom">
-                            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
-                                    <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Đăng nhập</h4>
-                                    <p class="text-white text-center mb-2">Hệ thống quản lý sự kiện NCKH</p>
-                                </div>
-                            </div>
-                            
-                            <div class="card-body">
-                                <?php if (!empty($errors['general'])): ?>
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <span class="text-sm"><?php echo $errors['general']; ?></span>
-                                    <button type="button" class="btn-close text-lg py-3 opacity-10" data-bs-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <?php endif; ?>
-                                
-                                <form role="form" method="POST" action="" class="text-start">
-                                    <!-- Username/Email -->
-                                    <div class="input-group input-group-outline mb-3 <?php echo !empty($oldData['username']) ? 'is-filled' : ''; ?>">
-                                        <label class="form-label">Email hoặc Tên đăng nhập</label>
-                                        <input type="text" 
-                                               name="username" 
-                                               class="form-control <?php echo !empty($errors['username']) ? 'is-invalid' : ''; ?>"
-                                               value="<?php echo e($oldData['username'] ?? ''); ?>">
-                                    </div>
-                                    <?php if (!empty($errors['username'])): ?>
-                                    <p class="text-danger text-xs mt-n2 mb-2"><?php echo $errors['username']; ?></p>
-                                    <?php endif; ?>
-                                    
-                                    <!-- Password -->
-                                    <div class="input-group input-group-outline mb-3">
-                                        <label class="form-label">Mật khẩu</label>
-                                        <input type="password" 
-                                               name="password" 
-                                               class="form-control <?php echo !empty($errors['password']) ? 'is-invalid' : ''; ?>">
-                                    </div>
-                                    <?php if (!empty($errors['password'])): ?>
-                                    <p class="text-danger text-xs mt-n2 mb-2"><?php echo $errors['password']; ?></p>
-                                    <?php endif; ?>
-                                    
-                                    <!-- Remember me -->
-                                    <div class="form-check form-switch d-flex align-items-center mb-3">
-                                        <input class="form-check-input" type="checkbox" id="rememberMe" name="remember">
-                                        <label class="form-check-label mb-0 ms-2" for="rememberMe">Ghi nhớ đăng nhập</label>
-                                    </div>
-                                    
-                                    <!-- Submit button -->
-                                    <div class="text-center">
-                                        <button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">Đăng nhập</button>
-                                    </div>
-                                    
-                                    <!-- Forgot password -->
-                                    <p class="mt-4 text-sm text-center">
-                                        <a href="#" class="text-primary text-gradient font-weight-bold" style="pointer-events: none; opacity: 0.5;">Quên mật khẩu?</a>
-                                    </p>
-                                </form>
-                            </div>
-                        </div>
-                        
-                        <!-- Info box -->
-                        <div class="card mt-3">
-                            <div class="card-body p-3">
-                                <p class="text-sm mb-2"><strong>Tài khoản demo:</strong></p>
-                                <ul class="text-xs mb-0">
-                                    <li>Admin: <code>admin</code> / <code>admin123</code></li>
-                                    <li>Giảng viên: <code>gv001</code> / <code>gv123456</code></li>
-                                    <li>Sinh viên: <code>sv001</code> / <code>sv123456</code></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<body class="login-bg">
+  <div class="container position-sticky z-index-sticky top-0">
+    <div class="row">
+      <div class="col-12">
+        <nav
+          class="navbar navbar-expand-lg blur border-radius-lg top-0 z-index-3 shadow position-absolute mt-4 py-2 start-0 end-0 mx-4">
+          <div class="container-fluid ps-2 pe-0">
+            <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3" href="<?= _HOST_URL ?>">
+              <i class="fas fa-calendar-alt me-2"></i>Hệ thống quản lý sự kiện
+            </a>
+            <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false"
+              aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon mt-2">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </span>
+            </button>
+            <div class="collapse navbar-collapse" id="navigation">
+              <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                  <a class="nav-link d-flex align-items-center me-2" href="<?= _HOST_URL ?>">
+                    <i class="fa fa-home opacity-6 text-dark me-1"></i>
+                    Trang Chủ
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link d-flex align-items-center me-2 active" aria-current="page"
+                    href="<?= _HOST_URL ?>?module=auth&action=login">
+                    <i class="fas fa-sign-in-alt opacity-6 text-dark me-1"></i>
+                    Đăng nhập
+                  </a>
+                </li>
+              </ul>
             </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <main class="main-content mt-0">
+    <section>
+      <div class="page-header min-vh-100">
+        <div class="container">
+          <div class="row">
+            <!-- Left Side - Illustration -->
+            <div
+              class="col-lg-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 start-0 text-center justify-content-center flex-column">
+              <div class="login-illustration">
+                <i class="fas fa-calendar-check floating-icon text-white"></i>
+                <i class="fas fa-users floating-icon text-white"></i>
+                <i class="fas fa-chart-line floating-icon text-white"></i>
+                <i class="fas fa-tasks floating-icon text-white"></i>
+
+                <div
+                  class="position-relative h-100 d-flex flex-column justify-content-center align-items-center px-5 text-white">
+                  <h1 class="display-4 font-weight-bold mb-4">Chào mừng trở lại!</h1>
+                  <p class="lead mb-0">Quản lý sự kiện của bạn một cách hiệu quả và chuyên nghiệp</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Side - Login Form -->
+            <div
+              class="col-xl-5 col-lg-6 col-md-8 col-11 d-flex flex-column ms-auto me-auto ms-lg-auto me-lg-5">
+              <div class="card login-card mt-8">
+                <div class="card-header pb-0 text-start">
+                  <h4 class="font-weight-bolder text-gradient text-primary">Đăng nhập</h4>
+                  <p class="mb-0">Nhập thông tin tài khoản của bạn để tiếp tục</p>
+                </div>
+                <div class="card-body">
+                  <?php if ($tb_dang_nhap != ""): ?>
+                    <div class="alert alert-<?= $error_class ?> alert-dismissible fade show"
+                      role="alert">
+                      <i class="fas fa-exclamation-circle me-2"></i><?= $tb_dang_nhap ?>
+                      <button type="button" class="btn-close" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+                    </div>
+                  <?php endif; ?>
+
+                  <form role="form" method="POST" action="">
+                    <div class="mb-3">
+                      <label class="form-label">Tài khoản hoặc Email</label>
+                      <div class="input-group input-group-outline">
+                        <input type="text" name="tendangnhap" class="form-control"
+                          placeholder="Nhập tài khoản hoặc email..."
+                          value="<?= isset($_POST['tendangnhap']) ? htmlspecialchars($_POST['tendangnhap']) : '' ?>"
+                          required>
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Mật khẩu</label>
+                      <div class="input-group input-group-outline">
+                        <input type="password" name="matkhau" id="password" class="form-control"
+                          placeholder="Nhập mật khẩu..." required>
+                      </div>
+                    </div>
+
+                    <div class="form-check form-switch d-flex align-items-center mb-3">
+                      <input class="form-check-input" type="checkbox" id="rememberMe">
+                      <label class="form-check-label mb-0 ms-3" for="rememberMe">Ghi nhớ đăng
+                        nhập</label>
+                    </div>
+
+                    <div class="text-center">
+                      <button type="submit" name="btn_dang_nhap"
+                        class="btn btn-login btn-lg w-100 mt-2 mb-0">
+                        <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                      </button>
+                    </div>
+                  </form>
+                </div>
+                <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                  <p class="mb-4 text-sm mx-auto">
+                    <a href="javascript:;" class="text-primary text-gradient font-weight-bold">Quên
+                      mật khẩu?</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-    </main>
-    
-    <!-- Core JS Files -->
-    <script src="<?php echo _HOST_URL; ?>/template/assets/js/core/popper.min.js"></script>
-    <script src="<?php echo _HOST_URL; ?>/template/assets/js/core/bootstrap.min.js"></script>
-    <script src="<?php echo _HOST_URL; ?>/template/assets/js/material-dashboard.min.js"></script>
+      </div>
+    </section>
+  </main>
+
+  <!-- Core JS Files -->
+  <script src="<?= _HOST_URL_TEMPLATES ?>/assets/js/core/popper.min.js"></script>
+  <script src="<?= _HOST_URL_TEMPLATES ?>/assets/js/core/bootstrap.min.js"></script>
+  <script src="<?= _HOST_URL_TEMPLATES ?>/assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="<?= _HOST_URL_TEMPLATES ?>/assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="<?= _HOST_URL_TEMPLATES ?>/assets/js/material-dashboard.min.js?v=3.2.0"></script>
 </body>
+
 </html>

@@ -3,8 +3,12 @@ if (!defined('_AUTHEN')) {
     die('Truy cập không hợp lệ');
 }
 
-// Set flash message trước khi logout
-setFlash('logout_success', 'Đăng xuất thành công!', 'success');
+// Xóa tất cả session
+$_SESSION = [];
+session_unset();
+session_destroy();
 
-// Gọi hàm logout (đã định nghĩa trong session.php)
-logout();
+// Chuyển hướng về trang đăng nhập
+header("Location: " . _HOST_URL . "?module=auth&action=login");
+exit();
+?>
