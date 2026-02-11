@@ -1,9 +1,4 @@
 <?php
-    require_once __DIR__ . '/../../config/database.php';
-
-    /**
-     * Hàm chèn dữ liệu
-     */
     function _insert_info($conn, $table, $fields = [], $values = []){
         $field_list = implode(", ", $fields);
 
@@ -25,9 +20,6 @@
         return true;
     }
 
-    /**
-     * Hàm cập nhật dữ liệu (Logic cũ - Nối chuỗi)
-     */
     function _update_info($conn, $table, $fields = [], $values = [], $conditions = []){
         if (count($fields) != count($values)){
             error_log("Lỗi _update_info: Số lượng trường và giá trị không khớp!");
@@ -37,7 +29,6 @@
         $clause = "";
         $set_clause = "";
 
-        // Câu lệnh điều kiện
         foreach ($conditions as $key => $condition){
             $operator = $condition[0];
             if (is_string($condition[1])){
@@ -49,7 +40,6 @@
             $clause .= "$key $operator $condition_value $logic ";
         }
         
-        // Câu lệnh SET
         for ($i = 0; $i < count($fields); $i++){
             if (is_string($values[$i])){
                 $values[$i] = "'" . mysqli_real_escape_string($conn, $values[$i]) . "'";
@@ -72,9 +62,6 @@
         return true;
     }
 
-    /**
-     * Hàm lấy dữ liệu (Prepared Statements - Hỗ trợ ORDER BY, LIMIT)
-     */
     function _select_info($conn, $table, $fields = [], $conditions = []){
         $field_list = implode(", ", $fields);
         if (empty($field_list)) $field_list = "*";
@@ -162,10 +149,6 @@
         mysqli_stmt_close($stmt);
         return $row_count > 0;
     }  
-
-    // ==========================================
-    // CÁC HÀM HELPER (Auth & Logic)
-    // ==========================================
 
     function chuan_hoa_chuoi_sql($conn, $str) {
         return mysqli_real_escape_string($conn, trim($str));
