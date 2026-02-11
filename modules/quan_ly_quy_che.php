@@ -1,33 +1,34 @@
 <?php
+    require_once __DIR__ . '/base.php'; // Đảm bảo require file base
+
     function tao_quy_che(
-    $conn,
-    $id_nguoi_thuc_hien,
-    $id_su_kien,
-    $ten_quy_che,
-    $mo_ta = ''
+        $conn,
+        $id_nguoi_thuc_hien,
+        $id_su_kien, // Lưu ý: Tham số này sẽ không được dùng để insert vào bảng quyche vì DB không có cột này
+        $ten_quy_che,
+        $mo_ta = ''
     ) {
-    if (!xac_thuc_quyen_truy_cap($conn, $id_nguoi_thuc_hien, 'event.manage')) {
-        return ['status' => false, 'message' => 'Không đủ quyền'];
+        if (!kiem_tra_quyen_he_thong($conn, $id_nguoi_thuc_hien, 'event.manage')) {
+            return ['status' => false, 'message' => 'Không đủ quyền'];
+        }
+
+        // CSDL: Bảng 'quyche' chỉ có (tenQuyChe, moTa). KHÔNG CÓ 'idSK'.
+        // Ta dùng hàm _insert_info chuẩn của base.php thay vì mysqli_query thủ công
+        $result = _insert_info($conn, 'quyche', 
+            ['tenQuyChe', 'moTa'], 
+            [$ten_quy_che, $mo_ta]
+        );
+
+        if (!$result) {
+            return ['status' => false, 'message' => 'Không tạo được quy chế'];
+        }
+
+        return [
+            'status' => true,
+            'idQuyChe' => mysqli_insert_id($conn),
+            'message' => 'Đã tạo quy chế'
+        ];
     }
-
-    $ten_quy_che = chuan_hoa_chuoi_sql($conn, $ten_quy_che);
-    $mo_ta = chuan_hoa_chuoi_sql($conn, $mo_ta);
-
-    $sql = "
-        INSERT INTO DSQUYCHE (idSK, tenQuyChe, moTa)
-        VALUES ('$id_su_kien', '$ten_quy_che', '$mo_ta')
-    ";
-
-    if (!mysqli_query($conn, $sql)) {
-        return ['status' => false, 'message' => 'Không tạo được quy chế'];
-    }
-
-    return [
-        'status' => true,
-        'idQuyChe' => mysqli_insert_id($conn),
-        'message' => 'Đã tạo quy chế'
-    ];
-}
 
     function tao_dieu_kien_don(
         $conn,
@@ -38,28 +39,26 @@
         $gia_tri_so_sanh,
         $mo_ta = ''
     ) {
-        if (!xac_thuc_quyen_truy_cap($conn, $id_nguoi_thuc_hien, 'event.manage')) {
+        if (!kiem_tra_quyen_he_thong($conn, $id_nguoi_thuc_hien, 'event.manage')) {
             return ['status' => false, 'message' => 'Không đủ quyền'];
         }
 
         mysqli_begin_transaction($conn);
         try {
-            $ten_dieu_kien = chuan_hoa_chuoi_sql($conn, $ten_dieu_kien);
-            $gia_tri_so_sanh = chuan_hoa_chuoi_sql($conn, $gia_tri_so_sanh);
-            $mo_ta = chuan_hoa_chuoi_sql($conn, $mo_ta);
-
-            mysqli_query($conn, "
-                INSERT INTO DIEUKIEN (loaiDieuKien, tenDieuKien, moTa)
-                VALUES ('DON', '$ten_dieu_kien', '$mo_ta')
-            ");
-
+            $res1 = _insert_info($conn, 'dieukien', 
+                ['loaiDieuKien', 'tenDieuKien', 'moTa'], 
+                ['DON', $ten_dieu_kien, $mo_ta]
+            );
+            
+            if (!$res1) throw new Exception("Lỗi tạo bảng điều kiện cha");
             $id_dieu_kien = mysqli_insert_id($conn);
 
-            mysqli_query($conn, "
-                INSERT INTO DIEUKIEN_DON
-                (idDieuKien, idThuocTinhKiemTra, idToanTu, giaTriSoSanh)
-                VALUES ('$id_dieu_kien', '$id_thuoc_tinh', '$id_toan_tu', '$gia_tri_so_sanh')
-            ");
+            $res2 = _insert_info($conn, 'dieukien_don',
+                ['idDieuKien', 'idThuocTinhKiemTra', 'idToanTu', 'giaTriSoSanh'],
+                [$id_dieu_kien, $id_thuoc_tinh, $id_toan_tu, $gia_tri_so_sanh]
+            );
+
+            if (!$res2) throw new Exception("Lỗi tạo bảng điều kiện con");
 
             mysqli_commit($conn);
             return ['status' => true, 'idDieuKien' => $id_dieu_kien];
@@ -70,7 +69,6 @@
         }
     }
 
-
     function tao_to_hop_dieu_kien(
         $conn,
         $id_nguoi_thuc_hien,
@@ -80,27 +78,26 @@
         $ten_to_hop,
         $mo_ta = ''
     ) {
-        if (!xac_thuc_quyen_truy_cap($conn, $id_nguoi_thuc_hien, 'event.manage')) {
+        if (!kiem_tra_quyen_he_thong($conn, $id_nguoi_thuc_hien, 'event.manage')) {
             return ['status' => false, 'message' => 'Không đủ quyền'];
         }
 
         mysqli_begin_transaction($conn);
         try {
-            $ten_to_hop = chuan_hoa_chuoi_sql($conn, $ten_to_hop);
-            $mo_ta = chuan_hoa_chuoi_sql($conn, $mo_ta);
-
-            mysqli_query($conn, "
-                INSERT INTO DIEUKIEN (loaiDieuKien, tenDieuKien, moTa)
-                VALUES ('TOHOP', '$ten_to_hop', '$mo_ta')
-            ");
-
+            $res1 = _insert_info($conn, 'dieukien', 
+                ['loaiDieuKien', 'tenDieuKien', 'moTa'], 
+                ['TOHOP', $ten_to_hop, $mo_ta]
+            );
+            
+            if (!$res1) throw new Exception("Lỗi tạo bảng điều kiện cha");
             $id_to_hop = mysqli_insert_id($conn);
 
-            mysqli_query($conn, "
-                INSERT INTO TOHOP_DIEUKIEN
-                (idDieuKien, idDieuKienTrai, idDieuKienPhai, idToanTu)
-                VALUES ('$id_to_hop', '$id_dieu_kien_trai', '$id_dieu_kien_phai', '$id_toan_tu_logic')
-            ");
+            $res2 = _insert_info($conn, 'tohop_dieukien',
+                ['idDieuKien', 'idDieuKienTrai', 'idDieuKienPhai', 'idToanTu'],
+                [$id_to_hop, $id_dieu_kien_trai, $id_dieu_kien_phai, $id_toan_tu_logic]
+            );
+
+            if (!$res2) throw new Exception("Lỗi tạo bảng tổ hợp");
 
             mysqli_commit($conn);
             return ['status' => true, 'idDieuKien' => $id_to_hop];
@@ -111,52 +108,49 @@
         }
     }
 
-
     function gan_dieu_kien_cho_quy_che(
         $conn,
         $id_nguoi_thuc_hien,
         $id_quy_che,
         $id_dieu_kien_cuoi
     ) {
-        if (!xac_thuc_quyen_truy_cap($conn, $id_nguoi_thuc_hien, 'event.manage')) {
+        if (!kiem_tra_quyen_he_thong($conn, $id_nguoi_thuc_hien, 'event.manage')) {
             return ['status' => false, 'message' => 'Không đủ quyền'];
         }
 
-        $sql = "
-            INSERT INTO QUYCHE_DIEUKIEN (idQuyChe, idDieuKienCuoi)
-            VALUES ('$id_quy_che', '$id_dieu_kien_cuoi')
-            ON DUPLICATE KEY UPDATE idDieuKienCuoi = '$id_dieu_kien_cuoi'
-        ";
+        $conditions = [
+            'WHERE' => ['idQuyChe', '=', $id_quy_che, '']
+        ];
+        
+        $exists = !empty(_select_info($conn, 'quyche_dieukien', [], $conditions));
+        
+        if ($exists) {
+            $update_cond = ['idQuyChe' => ['=', $id_quy_che, '']];
+            _update_info($conn, 'quyche_dieukien', ['idDieuKienCuoi'], [$id_dieu_kien_cuoi], $update_cond);
+        } else {
+            _insert_info($conn, 'quyche_dieukien', 
+                ['idQuyChe', 'idDieuKienCuoi'], 
+                [$id_quy_che, $id_dieu_kien_cuoi]
+            );
+        }
 
-        mysqli_query($conn, $sql);
         return ['status' => true, 'message' => 'Đã gán điều kiện cho quy chế'];
     }   
-
-
-    function kiem_tra_dieu_kien(
-        $conn,
-        $id_dieu_kien,
-        $du_lieu_dau_vao
-    ) {
-        $dk = truy_van_mot_ban_ghi($conn, 'DIEUKIEN', 'idDieuKien', $id_dieu_kien);
+    function kiem_tra_dieu_kien($conn, $id_dieu_kien, $du_lieu_dau_vao) {
+        $dk = truy_van_mot_ban_ghi($conn, 'dieukien', 'idDieuKien', $id_dieu_kien);
         if (!$dk) return false;
 
         if ($dk['loaiDieuKien'] == 'DON') {
             return kiem_tra_dieu_kien_don($conn, $id_dieu_kien, $du_lieu_dau_vao);
         }
-
         if ($dk['loaiDieuKien'] == 'TOHOP') {
             return kiem_tra_to_hop_dieu_kien($conn, $id_dieu_kien, $du_lieu_dau_vao);
         }
-
         return false;
     }
-    function kiem_tra_dieu_kien_don(
-        $conn,
-        $id_dieu_kien,
-        $du_lieu
-    ) {
-        $dk = truy_van_mot_ban_ghi($conn, 'DIEUKIEN_DON', 'idDieuKien', $id_dieu_kien);
+
+    function kiem_tra_dieu_kien_don($conn, $id_dieu_kien, $du_lieu) {
+        $dk = truy_van_mot_ban_ghi($conn, 'dieukien_don', 'idDieuKien', $id_dieu_kien);
         if (!$dk) return false;
 
         $gia_tri_thuc_te = $du_lieu[$dk['idThuocTinhKiemTra']] ?? null;
@@ -173,24 +167,15 @@
         }
     }
 
-    function kiem_tra_to_hop_dieu_kien(
-        $conn,
-        $id_dieu_kien,
-        $du_lieu
-    ) {
-        $to_hop = truy_van_mot_ban_ghi($conn, 'TOHOP_DIEUKIEN', 'idDieuKien', $id_dieu_kien);
+    function kiem_tra_to_hop_dieu_kien($conn, $id_dieu_kien, $du_lieu) {
+        $to_hop = truy_van_mot_ban_ghi($conn, 'tohop_dieukien', 'idDieuKien', $id_dieu_kien);
         if (!$to_hop) return false;
 
         $ket_qua_trai = kiem_tra_dieu_kien($conn, $to_hop['idDieuKienTrai'], $du_lieu);
         $ket_qua_phai = kiem_tra_dieu_kien($conn, $to_hop['idDieuKienPhai'], $du_lieu);
 
-        if ($to_hop['idToanTu'] == 1) {
-            return $ket_qua_trai && $ket_qua_phai;
-        }
-
-        if ($to_hop['idToanTu'] == 2) {
-            return $ket_qua_trai || $ket_qua_phai;
-        }
+        if ($to_hop['idToanTu'] == 1) return $ket_qua_trai && $ket_qua_phai;
+        if ($to_hop['idToanTu'] == 2) return $ket_qua_trai || $ket_qua_phai;
 
         return false;
     }
