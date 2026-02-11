@@ -6,7 +6,7 @@ const _ACTION = 'index';
 
 //Khai báo database
 const _HOST = 'localhost';
-const _DB = 'nckh';
+const _DB = 'nckh2';
 const _USER = 'root';
 const _PASS = '';
 const _DRIVER = 'mysql';

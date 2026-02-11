@@ -62,9 +62,10 @@ if (isset($_POST['btn_dang_nhap'])) {
 
   <style>
     .login-bg {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #cfe9f7 0%, #a8d8f0 100%);
       position: relative;
       overflow: hidden;
+      font-size: 1.3rem;
     }
 
     .login-bg::before {
@@ -90,22 +91,11 @@ if (isset($_POST['btn_dang_nhap'])) {
     }
 
     .login-illustration {
-      background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%),
-        url('<?= _HOST_URL_TEMPLATES ?>/assets/img/illustrations/illustration-signin.jpg');
+      background: none !important;
       background-size: cover;
       background-position: center;
       min-height: 100vh;
       position: relative;
-    }
-
-    .login-illustration::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 200px;
-      background: linear-gradient(to top, rgba(102, 126, 234, 0.4), transparent);
     }
 
     .login-card {
@@ -113,6 +103,7 @@ if (isset($_POST['btn_dang_nhap'])) {
       background: rgba(255, 255, 255, 0.95);
       border: 1px solid rgba(255, 255, 255, 0.3);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      font-size: 1.3rem;
     }
 
     .floating-icon {
@@ -166,6 +157,8 @@ if (isset($_POST['btn_dang_nhap'])) {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border: none;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      color: #ffffff !important;
+      font-weight: 600;
     }
 
     .btn-login:hover {
@@ -192,6 +185,23 @@ if (isset($_POST['btn_dang_nhap'])) {
         font-size: 0.9rem;
       }
     }
+        /* Mô tả dưới tiêu đề */
+    .card-header p {
+        color: #444 !important;
+        font-weight: 500;
+    }
+
+    /* Label input */
+    .form-label {
+        color: #333 !important;
+        font-weight: 600;
+    }
+
+    /* Chữ ghi nhớ đăng nhập */
+    .form-check-label {
+        color: #333 !important;
+        font-weight: 500;
+    }
   </style>
 </head>
 
@@ -199,40 +209,6 @@ if (isset($_POST['btn_dang_nhap'])) {
   <div class="container position-sticky z-index-sticky top-0">
     <div class="row">
       <div class="col-12">
-        <nav
-          class="navbar navbar-expand-lg blur border-radius-lg top-0 z-index-3 shadow position-absolute mt-4 py-2 start-0 end-0 mx-4">
-          <div class="container-fluid ps-2 pe-0">
-            <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3" href="<?= _HOST_URL ?>">
-              <i class="fas fa-calendar-alt me-2"></i>Hệ thống quản lý sự kiện
-            </a>
-            <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse"
-              data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false"
-              aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon mt-2">
-                <span class="navbar-toggler-bar bar1"></span>
-                <span class="navbar-toggler-bar bar2"></span>
-                <span class="navbar-toggler-bar bar3"></span>
-              </span>
-            </button>
-            <div class="collapse navbar-collapse" id="navigation">
-              <ul class="navbar-nav mx-auto">
-                <li class="nav-item">
-                  <a class="nav-link d-flex align-items-center me-2" href="<?= _HOST_URL ?>">
-                    <i class="fa fa-home opacity-6 text-dark me-1"></i>
-                    Trang Chủ
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link d-flex align-items-center me-2 active" aria-current="page"
-                    href="<?= _HOST_URL ?>?module=auth&action=login">
-                    <i class="fas fa-sign-in-alt opacity-6 text-dark me-1"></i>
-                    Đăng nhập
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
       </div>
     </div>
   </div>
@@ -240,31 +216,14 @@ if (isset($_POST['btn_dang_nhap'])) {
   <main class="main-content mt-0">
     <section>
       <div class="page-header min-vh-100">
-        <div class="container">
-          <div class="row">
-            <!-- Left Side - Illustration -->
-            <div
-              class="col-lg-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 start-0 text-center justify-content-center flex-column">
-              <div class="login-illustration">
-                <i class="fas fa-calendar-check floating-icon text-white"></i>
-                <i class="fas fa-users floating-icon text-white"></i>
-                <i class="fas fa-chart-line floating-icon text-white"></i>
-                <i class="fas fa-tasks floating-icon text-white"></i>
-
-                <div
-                  class="position-relative h-100 d-flex flex-column justify-content-center align-items-center px-5 text-white">
-                  <h1 class="display-4 font-weight-bold mb-4">Chào mừng trở lại!</h1>
-                  <p class="lead mb-0">Quản lý sự kiện của bạn một cách hiệu quả và chuyên nghiệp</p>
-                </div>
-              </div>
-            </div>
-
+        <div class="container-fluid">
+          <div class="row min-vh-100 d-flex align-items-center justify-content-center">
             <!-- Right Side - Login Form -->
             <div
-              class="col-xl-5 col-lg-6 col-md-8 col-11 d-flex flex-column ms-auto me-auto ms-lg-auto me-lg-5">
+              class="col-md-6 col-lg-4 col-11">
               <div class="card login-card mt-8">
                 <div class="card-header pb-0 text-start">
-                  <h4 class="font-weight-bolder text-gradient text-primary">Đăng nhập</h4>
+                  <h3 class="font-weight-bolder text-gradient text-primary text-center">Hệ thống quản lý cuộc thi</h3>
                   <p class="mb-0">Nhập thông tin tài khoản của bạn để tiếp tục</p>
                 </div>
                 <div class="card-body">
@@ -323,7 +282,6 @@ if (isset($_POST['btn_dang_nhap'])) {
       </div>
     </section>
   </main>
-
   <!-- Core JS Files -->
   <script src="<?= _HOST_URL_TEMPLATES ?>/assets/js/core/popper.min.js"></script>
   <script src="<?= _HOST_URL_TEMPLATES ?>/assets/js/core/bootstrap.min.js"></script>
