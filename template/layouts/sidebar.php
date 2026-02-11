@@ -30,10 +30,10 @@ if (!defined('_AUTHEN')) {
             </li>
             
             <li class="nav-item">
-                <a class="nav-link <?= (isset($active_page) && $active_page == 'events') ? 'active bg-gradient-dark text-white' : 'text-dark' ?>"
+                <a class="nav-link <?= (isset($active_page) && $active_page == 'event') ? 'active bg-gradient-dark text-white' : 'text-dark' ?>"
                     href="<?= _HOST_URL ?>?module=event">
                     <i class="material-symbols-rounded opacity-5">event</i>
-                    <span class="nav-link-text ms-1">Sự kiện</span>
+                    <span class="nav-link-text ms-1">Quản lí sự kiện</span>
                 </a>
             </li>
             

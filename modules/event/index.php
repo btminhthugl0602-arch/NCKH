@@ -2,146 +2,29 @@
 if (!defined('_AUTHEN')) {
     die('Truy cập không hợp lệ');
 }
-<?php
-if (!defined('_AUTHEN')) {
-  die('Truy cập không hợp lệ');
-}
 
 // Kiểm tra đăng nhập
 if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
-  header("Location: " . _HOST_URL . "?module=auth&action=login");
-  exit();
+    header("Location: " . _HOST_URL . "?module=auth&action=login");
+    exit();
 }
 
-
-
 $data = [
-  'page_title' => 'Trang chủ'
+    'page_title' => 'Quản lý sự kiện'
 ];
 
-// Include header
-layout('header', $data);
+$active_page = 'event';
 
-// Include sidebar
+layout('header', $data);
 layout('sidebar');
 ?>
 
-<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
 
-  <?php
-  // Include navbar
-  layout('navbar');
-  ?>
+<?php layout('navbar'); ?>
 
-  <!-- Main Content -->
-  <div class="container-fluid py-2">
-    <div class="row">
-      <div class="ms-3">
-        <h3 class="mb-4 h4 font-weight-bolder">Tổng quan hệ thống</h3>
-      </div>
-  <div class="row mb-4">
-  <div class="col-lg-6">
-    <div class="input-group input-group-outline">
-      
-      <input type="text" class="form-control"
-        placeholder="Tìm kiếm đề tài hoặc sự kiện...">
-      
-      <span class="input-group-text">
-        <i class="material-symbols-rounded">search</i>
-      </span>
-      
-    </div>
-  </div>
-</div>
-      <!-- Stats Cards -->
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <div class="card">
-          <div class="card-header p-2 ps-3">
-            <div class="d-flex justify-content-between">
-              <div>
-                <p class="text-sm mb-0 text-capitalize">Today's Money</p>
-                <h4 class="mb-0">$53k</h4>
-              </div>
-              <div
-                class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
-                <i class="material-symbols-rounded opacity-10">weekend</i>
-              </div>
-            </div>
-          </div>
-          <hr class="dark horizontal my-0">
-          <div class="card-footer p-2 ps-3">
-            <p class="mb-0 text-sm"><span class="text-success font-weight-bolder">+55% </span>than last
-              week</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <div class="card">
-          <div class="card-header p-2 ps-3">
-            <div class="d-flex justify-content-between">
-              <div>
-                <p class="text-sm mb-0 text-capitalize">Today's Users</p>
-                <h4 class="mb-0">2300</h4>
-              </div>
-              <div
-                class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
-                <i class="material-symbols-rounded opacity-10">person</i>
-              </div>
-            </div>
-          </div>
-          <hr class="dark horizontal my-0">
-          <div class="card-footer p-2 ps-3">
-            <p class="mb-0 text-sm"><span class="text-success font-weight-bolder">+3% </span>than last
-              month</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <div class="card">
-          <div class="card-header p-2 ps-3">
-            <div class="d-flex justify-content-between">
-              <div>
-                <p class="text-sm mb-0 text-capitalize">Ads Views</p>
-                <h4 class="mb-0">3,462</h4>
-              </div>
-              <div
-                class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
-                <i class="material-symbols-rounded opacity-10">leaderboard</i>
-              </div>
-            </div>
-          </div>
-          <hr class="dark horizontal my-0">
-          <div class="card-footer p-2 ps-3">
-            <p class="mb-0 text-sm"><span class="text-danger font-weight-bolder">-2% </span>than
-              yesterday</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-xl-3 col-sm-6">
-        <div class="card">
-          <div class="card-header p-2 ps-3">
-            <div class="d-flex justify-content-between">
-              <div>
-                <p class="text-sm mb-0 text-capitalize">Sales</p>
-                <h4 class="mb-0">$103,430</h4>
-              </div>
-              <div
-                class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
-                <i class="material-symbols-rounded opacity-10">weekend</i>
-              </div>
-            </div>
-          </div>
-          <hr class="dark horizontal my-0">
-          <div class="card-footer p-2 ps-3">
-            <p class="mb-0 text-sm"><span class="text-success font-weight-bolder">+5% </span>than
-              yesterday</p>
-          </div>
-        </div>
-      </div>
-    </div>
+<div class="container-fluid py-4">
+    <h3>Danh sách sự kiện</h3>
 
     <!-- Charts Row -->
     <div class="row">
@@ -203,13 +86,14 @@ layout('sidebar');
         </div>
       </div>
     </div>
-
-
-
-  </div>
+    <div class="card mt-3">
+        <div class="card-body">
+            Nội dung quản lý sự kiện sẽ hiển thị tại đây.
+        </div>
+    </div>
+</div>
 
 </main>
-
 <!-- Chart Scripts -->
 <script src="<?= _HOST_URL_TEMPLATES ?>/assets/js/plugins/chartjs.min.js"></script>
 <script>
@@ -447,7 +331,5 @@ layout('sidebar');
     },
   });
 </script>
-<?php
-// Include footer
-layout('footer');
-?>
+<?php layout('footer'); ?>
+
