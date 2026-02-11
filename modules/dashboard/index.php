@@ -28,47 +28,58 @@ layout('sidebar');
   // Include navbar
   layout('navbar');
   ?>
-
+<style>
+  .card.h-100 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+</style>
   <!-- Main Content -->
   <div class="container-fluid py-2">
-    <div class="row">
+    <div class="row align-items-stretch">
       <div class="ms-3">
-        <h3 class="mb-0 h4 font-weight-bolder">Dashboard</h3>
-        <p class="mb-4">
-          Check the sales, value and bounce rate by country.
-        </p>
+        <h3 class="mb-4 h4 font-weight-bolder">Tổng quan hệ thống</h3>
       </div>
-
+  <div class="row mb-4">
+  <div class="col-lg-6">
+    <div class="input-group input-group-outline">
+      
+      <input type="text" class="form-control"
+        placeholder="Tìm kiếm đề tài hoặc sự kiện...">
+      
+      <span class="input-group-text">
+        <i class="material-symbols-rounded">search</i>
+      </span>
+      
+    </div>
+  </div>
+</div>
       <!-- Stats Cards -->
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <div class="card">
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card h-100">
           <div class="card-header p-2 ps-3">
             <div class="d-flex justify-content-between">
               <div>
-                <p class="text-sm mb-0 text-capitalize">Today's Money</p>
-                <h4 class="mb-0">$53k</h4>
+                <p class="text-sm mb-0 text-capitalize">Giới thiệu</p>
+                <h4 class="mb-0">Nền tảng quản lý cuộc thi toàn diện, hỗ trợ quản lý sự kiện, người dùng và giám sát hoạt động hệ thống.</h4>
               </div>
               <div
                 class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
-                <i class="material-symbols-rounded opacity-10">weekend</i>
+                <i class="material-symbols-rounded opacity-10">event</i>
               </div>
             </div>
-          </div>
-          <hr class="dark horizontal my-0">
-          <div class="card-footer p-2 ps-3">
-            <p class="mb-0 text-sm"><span class="text-success font-weight-bolder">+55% </span>than last
-              week</p>
           </div>
         </div>
       </div>
 
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <div class="card">
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card h-100">
           <div class="card-header p-2 ps-3">
             <div class="d-flex justify-content-between">
               <div>
-                <p class="text-sm mb-0 text-capitalize">Today's Users</p>
-                <h4 class="mb-0">2300</h4>
+                <p class="text-sm mb-0 text-capitalize">Sự kiện</p>
+                <h4 class="mb-0">12 sự kiện đang hoạt động</h4>
               </div>
               <div
                 class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
@@ -76,21 +87,16 @@ layout('sidebar');
               </div>
             </div>
           </div>
-          <hr class="dark horizontal my-0">
-          <div class="card-footer p-2 ps-3">
-            <p class="mb-0 text-sm"><span class="text-success font-weight-bolder">+3% </span>than last
-              month</p>
-          </div>
         </div>
       </div>
 
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <div class="card">
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card h-100">
           <div class="card-header p-2 ps-3">
             <div class="d-flex justify-content-between">
               <div>
-                <p class="text-sm mb-0 text-capitalize">Ads Views</p>
-                <h4 class="mb-0">3,462</h4>
+                <p class="text-sm mb-0 text-capitalize">Người dùng</p>
+                <h4 class="mb-0">1000+ tài khoản</h4>
               </div>
               <div
                 class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
@@ -98,44 +104,20 @@ layout('sidebar');
               </div>
             </div>
           </div>
-          <hr class="dark horizontal my-0">
-          <div class="card-footer p-2 ps-3">
-            <p class="mb-0 text-sm"><span class="text-danger font-weight-bolder">-2% </span>than
-              yesterday</p>
-          </div>
         </div>
-      </div>
-
-      <div class="col-xl-3 col-sm-6">
-        <div class="card">
-          <div class="card-header p-2 ps-3">
-            <div class="d-flex justify-content-between">
-              <div>
-                <p class="text-sm mb-0 text-capitalize">Sales</p>
-                <h4 class="mb-0">$103,430</h4>
-              </div>
-              <div
-                class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
-                <i class="material-symbols-rounded opacity-10">weekend</i>
-              </div>
-            </div>
-          </div>
-          <hr class="dark horizontal my-0">
-          <div class="card-footer p-2 ps-3">
-            <p class="mb-0 text-sm"><span class="text-success font-weight-bolder">+5% </span>than
-              yesterday</p>
-          </div>
-        </div>
-      </div>
+</div>
     </div>
-
+<hr>
     <!-- Charts Row -->
+     <div class="ms-3">
+        <h3 class="mb-4 h4 font-weight-bolder">Thông báo chung</h3>
+      </div>
     <div class="row">
       <div class="col-lg-4 col-md-6 mt-4 mb-4">
         <div class="card">
           <div class="card-body">
-            <h6 class="mb-0 ">Website Views</h6>
-            <p class="text-sm ">Last Campaign Performance</p>
+            <h6 class="mb-0 ">Cuộc thi A</h6>
+            <p class="text-sm ">Sắp diễn ra trong 2 ngày nữa</p>
             <div class="pe-2">
               <div class="chart">
                 <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
@@ -144,7 +126,7 @@ layout('sidebar');
             <hr class="dark horizontal">
             <div class="d-flex ">
               <i class="material-symbols-rounded text-sm my-auto me-1">schedule</i>
-              <p class="mb-0 text-sm"> campaign sent 2 days ago </p>
+              <p class="mb-0 text-sm"> nhắc tôi </p>
             </div>
           </div>
         </div>
@@ -153,18 +135,16 @@ layout('sidebar');
       <div class="col-lg-4 col-md-6 mt-4 mb-4">
         <div class="card ">
           <div class="card-body">
-            <h6 class="mb-0 "> Daily Sales </h6>
-            <p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) increase in today sales.
+            <h6 class="mb-0 "> Thông báo chung </h6>
+            <p class="text-sm "> <span class="font-weight-bolder">Thông báo từ hệ thống</span>) increase in today sales.
             </p>
             <div class="pe-2">
-              <div class="chart">
-                <canvas id="chart-line" class="chart-canvas" height="170"></canvas>
-              </div>
+              <h4 class="mb-0">Hệ thống đang bảo trì</h4>
             </div>
             <hr class="dark horizontal">
             <div class="d-flex ">
               <i class="material-symbols-rounded text-sm my-auto me-1">schedule</i>
-              <p class="mb-0 text-sm"> updated 4 min ago </p>
+              <p class="mb-0 text-sm"> nhắc tôi </p>
             </div>
           </div>
         </div>
@@ -173,8 +153,8 @@ layout('sidebar');
       <div class="col-lg-4 mt-4 mb-3">
         <div class="card">
           <div class="card-body">
-            <h6 class="mb-0 ">Completed Tasks</h6>
-            <p class="text-sm ">Last Campaign Performance</p>
+            <h6 class="mb-0 ">Cuộc thi B</h6>
+            <p class="text-sm ">Sẽ kết thúc trong 2 ngày nữa</p>
             <div class="pe-2">
               <div class="chart">
                 <canvas id="chart-line-tasks" class="chart-canvas" height="170"></canvas>
@@ -183,7 +163,7 @@ layout('sidebar');
             <hr class="dark horizontal">
             <div class="d-flex ">
               <i class="material-symbols-rounded text-sm my-auto me-1">schedule</i>
-              <p class="mb-0 text-sm">just updated</p>
+              <p class="mb-0 text-sm">nhặc tôi</p>
             </div>
           </div>
         </div>

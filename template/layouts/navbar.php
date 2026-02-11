@@ -31,10 +31,7 @@ if (!defined('_AUTHEN')) {
         
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
             <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                <div class="input-group input-group-outline">
-                    <label class="form-label">Tìm kiếm...</label>
-                    <input type="text" class="form-control">
-                </div>
+                
             </div>
             <ul class="navbar-nav d-flex align-items-center justify-content-end">
                 <li class="nav-item px-3 d-flex align-items-center">
@@ -97,6 +94,16 @@ if (!defined('_AUTHEN')) {
                         </span>
                     </a>
                 </li>
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 1): ?>
+<li class="nav-item px-3 d-flex align-items-center">
+  <div class="form-check form-switch mb-0">
+    <input class="form-check-input" type="checkbox" id="editmode">
+    <label class="form-check-label ms-2 text-sm" for="editmode">
+      Edit mode
+    </label>
+  </div>
+</li>
+<?php endif; ?>
             </ul>
         </div>
     </div>
