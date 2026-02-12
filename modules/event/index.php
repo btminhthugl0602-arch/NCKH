@@ -40,12 +40,12 @@ exit();
     }
 }
 layout('header', $data);
-layout('sidebar');
+layout('sidebar', $data);
 ?>
 
 <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
 
-<?php layout('navbar'); ?>
+<?php layout('navbar', $data); ?>
 
 <div class="container-fluid py-4">
 

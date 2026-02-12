@@ -7,6 +7,26 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
     header("Location: " . _HOST_URL . "?module=auth&action=login");
     exit();
 }
+if (isset($_POST['create_user'])) {
+
+    global $conn;
+
+    $tenTK = mysqli_real_escape_string($conn, $_POST['tenTK']);
+    $matKhau = password_hash($_POST['matKhau'], PASSWORD_DEFAULT);
+    $idLoaiTK = (int)$_POST['idLoaiTK'];
+
+    $sql = "
+        INSERT INTO taikhoan
+        (tenTK, matKhau, idLoaiTK, isActive)
+        VALUES
+        ('$tenTK', '$matKhau', $idLoaiTK, 1)
+    ";
+
+    mysqli_query($conn, $sql);
+
+    header("Location: ?module=users");
+    exit();
+}
 global $conn;
 
 $keyword = $_GET['keyword'] ?? '';
@@ -36,14 +56,14 @@ $active_page = 'users';
 $keyword = $_GET['keyword'] ?? '';
 ob_start();
 layout('header', $data);
-layout('sidebar');
+layout('sidebar', $data);
 
 ?>
 
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NKDMSK6" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-  <?php layout('navbar'); ?>  
+  <?php layout('navbar', $data); ?>  
   <div class="container-fluid py-2">
       <div class="row">
         <div class="col-12">
@@ -77,11 +97,12 @@ layout('sidebar');
 
     <!-- Nút tạo tài khoản -->
     <div class="col-md-6 text-end">
-        <a href="?module=users&action=create"
-           class="btn bg-gradient-primary">
-            <i class="material-symbols-rounded">person_add</i>
-            Tạo tài khoản
-        </a>
+        <button class="btn bg-gradient-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#createUserModal">
+    <i class="material-symbols-rounded">person_add</i>
+    Tạo tài khoản
+</button>
     </div>
 
 </div>
@@ -148,22 +169,60 @@ layout('sidebar');
         </div>
       </div>
     </div>
-  </main>
-  <div class="fixed-plugin">
-    <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
-      <i class="material-symbols-rounded py-2">settings</i>
-    </a>
-    <div class="card shadow-lg">
-      <div class="card-header pb-0 pt-3">
-        <div class="float-start">
-          <h5 class="mt-3 mb-0">Material UI Configurator</h5>
-          <p>See our dashboard options.</p>
+    <div class="modal fade" id="createUserModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <form method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title">Tạo tài khoản</h5>
+          <button type="button" class="btn-close"
+                  data-bs-dismiss="modal"></button>
         </div>
-        <div class="float-end mt-4">
-          <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
-            <i class="material-symbols-rounded">clear</i>
+
+        <div class="modal-body">
+
+          <div class="mb-3">
+            <label>Tên đăng nhập</label>
+            <input type="text" name="tenTK"
+                   class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label>Mật khẩu</label>
+            <input type="password" name="matKhau"
+                   class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label>Loại tài khoản</label>
+            <select name="idLoaiTK" class="form-control">
+              <option value="1">Quản trị viên</option>
+              <option value="2">Giảng viên</option>
+              <option value="3">Sinh viên</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button"
+                  class="btn bg-gradient-secondary"
+                  data-bs-dismiss="modal">
+            Hủy
+          </button>
+
+          <button type="submit"
+                  name="create_user"
+                  class="btn bg-gradient-primary">
+            Lưu
           </button>
         </div>
+      </form>
+
+    </div>
+  </div>
+  </main>
   <!--   Core JS Files   -->
   <script src="<?php echo _HOST_URL_TEMPLATES; ?>/assets/js/core/popper.min.js"></script>
   <script src="<?php echo _HOST_URL_TEMPLATES; ?>/assets/js/core/bootstrap.min.js"></script>
@@ -183,4 +242,6 @@ layout('sidebar');
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1b7cbb72744b40c580f8633c6b62637e","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+
+</div>
 <?php layout('footer'); ?>
