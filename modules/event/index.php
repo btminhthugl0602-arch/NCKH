@@ -14,7 +14,19 @@ $data = [
 ];
 
 $active_page = 'event';
+if (isset($_POST['create_event'])) {
 
+    $event_name = trim($_POST['event_name']);
+
+    if (!empty($event_name)) {
+
+        // Demo: tạo ID giả
+        $new_event_id = rand(100,999);
+
+        header("Location: " . _HOST_URL . "?module=event&action=detail&id=" . $new_event_id);
+        exit();
+    }
+}
 layout('header', $data);
 layout('sidebar');
 ?>
@@ -24,76 +36,108 @@ layout('sidebar');
 <?php layout('navbar'); ?>
 
 <div class="container-fluid py-4">
-    <h3>Danh sách sự kiện</h3>
 
-    <!-- Charts Row -->
+    <!-- Header + Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0">Quản lý sự kiện</h4>
+
+        <button class="btn bg-gradient-dark" 
+        data-bs-toggle="modal" 
+        data-bs-target="#createEventModal">
+    <i class="material-symbols-rounded">add</i>
+    Tạo sự kiện
+</button>
+    </div>
+
+    <!-- Search -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="GET">
+                <input type="hidden" name="module" value="event">
+                <input type="hidden" name="action" value="index">
+
+                <div class="input-group input-group-outline">
+                    <label class="form-label">Tìm kiếm sự kiện...</label>
+                    <input type="text" name="keyword" class="form-control"
+                        value="<?= isset($_GET['keyword']) ? $_GET['keyword'] : '' ?>">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Event List -->
     <div class="row">
-      <div class="col-lg-4 col-md-6 mt-4 mb-4">
-        <div class="card">
-          <div class="card-body">
-            <h6 class="mb-0 ">Website Views</h6>
-            <p class="text-sm ">Last Campaign Performance</p>
-            <div class="pe-2">
-              <div class="chart">
-                <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
-              </div>
-            </div>
-            <hr class="dark horizontal">
-            <div class="d-flex ">
-              <i class="material-symbols-rounded text-sm my-auto me-1">schedule</i>
-              <p class="mb-0 text-sm"> campaign sent 2 days ago </p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="col-lg-4 col-md-6 mt-4 mb-4">
-        <div class="card ">
-          <div class="card-body">
-            <h6 class="mb-0 "> Daily Sales </h6>
-            <p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) increase in today sales.
-            </p>
-            <div class="pe-2">
-              <div class="chart">
-                <canvas id="chart-line" class="chart-canvas" height="170"></canvas>
-              </div>
-            </div>
-            <hr class="dark horizontal">
-            <div class="d-flex ">
-              <i class="material-symbols-rounded text-sm my-auto me-1">schedule</i>
-              <p class="mb-0 text-sm"> updated 4 min ago </p>
-            </div>
-          </div>
-        </div>
-      </div>
+        <?php
+        // Demo dữ liệu (sau này lấy từ database)
+        $events = [
+            ['id' => 1, 'name' => 'Cuộc thi NCKH 2026', 'date' => '20/03/2026'],
+            ['id' => 2, 'name' => 'Olympic Tin học', 'date' => '15/04/2026'],
+            ['id' => 3, 'name' => 'Hội thảo AI', 'date' => '10/05/2026'],
+            ['id' => 4, 'name' => 'Cuộc thi Startup', 'date' => '01/06/2026'],
+        ];
 
-      <div class="col-lg-4 mt-4 mb-3">
-        <div class="card">
-          <div class="card-body">
-            <h6 class="mb-0 ">Completed Tasks</h6>
-            <p class="text-sm ">Last Campaign Performance</p>
-            <div class="pe-2">
-              <div class="chart">
-                <canvas id="chart-line-tasks" class="chart-canvas" height="170"></canvas>
-              </div>
+        foreach ($events as $event):
+        ?>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h6 class="mb-2"><?= $event['name'] ?></h6>
+                    <p class="text-sm text-muted mb-3">
+                        Ngày tổ chức: <?= $event['date'] ?>
+                    </p>
+
+                    <a href="<?= _HOST_URL ?>?module=event&action=detail&id=<?= $event['id'] ?>" 
+                       class="btn btn-sm bg-gradient-info w-100">
+                        Xem chi tiết
+                    </a>
+                </div>
             </div>
-            <hr class="dark horizontal">
-            <div class="d-flex ">
-              <i class="material-symbols-rounded text-sm my-auto me-1">schedule</i>
-              <p class="mb-0 text-sm">just updated</p>
-            </div>
-          </div>
         </div>
-      </div>
+
+        <?php endforeach; ?>
+
     </div>
-    <div class="card mt-3">
-        <div class="card-body">
-            Nội dung quản lý sự kiện sẽ hiển thị tại đây.
-        </div>
-    </div>
+
 </div>
-
 </main>
+<!-- Modal Create Event -->
+<div class="modal fade" id="createEventModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <form method="POST">
+
+        <div class="modal-header">
+          <h5 class="modal-title">Tạo sự kiện mới</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+
+          <div class="input-group input-group-outline">
+            <label class="form-label">Tên sự kiện</label>
+            <input type="text" name="event_name" class="form-control" required>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            Hủy
+          </button>
+
+          <button type="submit" name="create_event" class="btn bg-gradient-dark">
+            Tạo
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
 <!-- Chart Scripts -->
 <script src="<?= _HOST_URL_TEMPLATES ?>/assets/js/plugins/chartjs.min.js"></script>
 <script>
