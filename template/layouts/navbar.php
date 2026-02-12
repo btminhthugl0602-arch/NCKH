@@ -89,13 +89,13 @@ $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Khách';
                     </ul>
                 </li>
                 <?php endif; ?>
-                
+
                 <li class="nav-item d-flex align-items-center">
                     <?php if ($user_role == 'guest'): ?>
                     <a href="<?= _HOST_URL ?>?module=auth&action=login"
                         class="nav-link text-body font-weight-bold px-0">
                         <i class="material-symbols-rounded">account_circle</i>
-                        <span class="d-sm-inline d-none ms-1">Khách</span>
+                        <sp clas s="d-sm-inline d-none ms-1">Đăng nhập</sp an>
                     </a>
                     <?php else: ?>
                     <a href="<?= _HOST_URL ?>?module=auth&action=logout"
@@ -107,17 +107,6 @@ $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Khách';
                     </a>
                     <?php endif; ?>
                 </li>
-                
-                <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 1): ?>
-                <li class="nav-item px-3 d-flex align-items-center">
-                    <div class="form-check form-switch mb-0">
-                        <input class="form-check-input" type="checkbox" id="editmode">
-                        <label class="form-check-label ms-2 text-sm" for="editmode">
-                            Edit mode
-                        </label>
-                    </div>
-                </li>
-                <?php endif; ?>
             </ul>
         </div>
     </div>
