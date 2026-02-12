@@ -2,6 +2,9 @@
 if (!defined('_AUTHEN')) {
     die('Truy cập không hợp lệ');
 }
+
+$user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'guest';
+$user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Khách';
 ?>
 <!-- Navbar -->
 <nav class="navbar navbar-main navbar-expand-lg px-0 mx-3 shadow-none border-radius-xl" id="navbarBlur"
@@ -28,15 +31,13 @@ if (!defined('_AUTHEN')) {
                 </ol>
             </nav>
         </div>
-        
+
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
             <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                <div class="input-group input-group-outline">
-                    <label class="form-label">Tìm kiếm...</label>
-                    <input type="text" class="form-control">
-                </div>
+
             </div>
             <ul class="navbar-nav d-flex align-items-center justify-content-end">
+                <?php if ($user_role != 'guest'): ?>
                 <li class="nav-item px-3 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-body p-0">
                         <i class="material-symbols-rounded fixed-plugin-button-nav">settings</i>
@@ -47,8 +48,7 @@ if (!defined('_AUTHEN')) {
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="material-symbols-rounded">notifications</i>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4"
-                        aria-labelledby="dropdownMenuButton">
+                    <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
                         <li class="mb-2">
                             <a class="dropdown-item border-radius-md" href="javascript:;">
                                 <div class="d-flex py-1">
@@ -88,15 +88,36 @@ if (!defined('_AUTHEN')) {
                         </li>
                     </ul>
                 </li>
+                <?php endif; ?>
+                
                 <li class="nav-item d-flex align-items-center">
+                    <?php if ($user_role == 'guest'): ?>
+                    <a href="<?= _HOST_URL ?>?module=auth&action=login"
+                        class="nav-link text-body font-weight-bold px-0">
+                        <i class="material-symbols-rounded">account_circle</i>
+                        <span class="d-sm-inline d-none ms-1">Khách</span>
+                    </a>
+                    <?php else: ?>
                     <a href="<?= _HOST_URL ?>?module=auth&action=logout"
                         class="nav-link text-body font-weight-bold px-0">
                         <i class="material-symbols-rounded">account_circle</i>
                         <span class="d-sm-inline d-none ms-1">
-                            <?= isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : 'Đăng xuất' ?>
+                            <?= htmlspecialchars($user_name) ?>
                         </span>
                     </a>
+                    <?php endif; ?>
                 </li>
+                
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 1): ?>
+                <li class="nav-item px-3 d-flex align-items-center">
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" id="editmode">
+                        <label class="form-check-label ms-2 text-sm" for="editmode">
+                            Edit mode
+                        </label>
+                    </div>
+                </li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>
