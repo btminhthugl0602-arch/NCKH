@@ -42,7 +42,7 @@ $user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'guest';
                 </a>
             </li>
 
-            <?php if ($user_role == 1): // Chỉ Admin mới thấy ?>
+            <?php if ($user_role != 'guest'): // Tất cả user đăng nhập đều thấy ?>
             <li class="nav-item">
                 <a class="nav-link <?= (isset($active_page) && $active_page == 'users') ? 'active bg-gradient-dark text-white' : 'text-dark' ?>"
                     href="<?= _HOST_URL ?>?module=users">
@@ -50,7 +50,9 @@ $user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'guest';
                     <span class="nav-link-text ms-1">Người dùng</span>
                 </a>
             </li>
+            <?php endif; ?>
 
+            <?php if ($user_role == 1): // Chỉ Admin mới thấy Nhóm ?>
             <li class="nav-item">
                 <a class="nav-link <?= (isset($active_page) && $active_page == 'groups') ? 'active bg-gradient-dark text-white' : 'text-dark' ?>"
                     href="<?= _HOST_URL ?>?module=groups">
@@ -91,3 +93,58 @@ $user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'guest';
         </div>
     </div>
 </aside>
+
+<style>
+/* CSS cho việc ẩn/hiện sidebar hoàn toàn */
+.sidenav.sidebar-hidden {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.sidenav {
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Điều chỉnh main content khi sidebar ẩn */
+body.sidebar-hidden .main-content {
+    margin-left: 0 !important;
+}
+
+body:not(.sidebar-hidden) .main-content {
+    margin-left: 250px;
+}
+
+/* Responsive */
+@media (max-width: 1199.98px) {
+    body:not(.sidebar-hidden) .main-content {
+        margin-left: 0;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('sidenav-main');
+    const toggleBtn = document.getElementById('sidebarToggleBtn');
+    const body = document.body;
+    
+    // Kiểm tra trạng thái sidebar từ localStorage
+    const sidebarHidden = localStorage.getItem('sidebarHidden') === 'true';
+    if (sidebarHidden) {
+        sidebar.classList.add('sidebar-hidden');
+        body.classList.add('sidebar-hidden');
+    }
+    
+    // Toggle sidebar khi click nút
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('sidebar-hidden');
+            body.classList.toggle('sidebar-hidden');
+            
+            // Lưu trạng thái vào localStorage
+            const isHidden = sidebar.classList.contains('sidebar-hidden');
+            localStorage.setItem('sidebarHidden', isHidden);
+        });
+    }
+});
+</script>

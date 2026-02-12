@@ -41,6 +41,7 @@ if (isset($_POST['btn_dang_nhap'])) {
                     $_SESSION['user_id'] = $row['idTK'];
                     $_SESSION['user_name'] = $row['tenTK'];
                     $_SESSION['role'] = $row['idLoaiTK'];
+                    $_SESSION['login_success'] = true;
 
                     header("Location: " . _HOST_URL . "?module=dashboard&action=index");
                     exit();

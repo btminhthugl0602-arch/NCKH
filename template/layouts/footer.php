@@ -37,7 +37,6 @@ if (!defined('_AUTHEN')) {
 <script src="<?= _HOST_URL_TEMPLATES ?>/assets/js/plugins/perfect-scrollbar.min.js"></script>
 <script src="<?= _HOST_URL_TEMPLATES ?>/assets/js/plugins/smooth-scrollbar.min.js"></script>
 
-<!-- Custom Scripts -->
 <script>
 var win = navigator.platform.indexOf('Win') > -1;
 if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -46,40 +45,10 @@ if (win && document.querySelector('#sidenav-scrollbar')) {
     }
     Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
 }
-
-// Sidebar Toggle Script
-document.addEventListener('DOMContentLoaded', function() {
-    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
-    const iconSidenav = document.getElementById('iconSidenav');
-    const body = document.body;
-    const sidenav = document.getElementById('sidenav-main');
-    
-    if (sidebarToggleBtn) {
-        sidebarToggleBtn.addEventListener('click', function() {
-            if (body.classList.contains('g-sidenav-pinned')) {
-                body.classList.remove('g-sidenav-pinned');
-                body.classList.add('g-sidenav-hidden');
-            } else {
-                body.classList.add('g-sidenav-pinned');
-                body.classList.remove('g-sidenav-hidden');
-            }
-        });
-    }
-    
-    // Mobile close button
-    if (iconSidenav) {
-        iconSidenav.addEventListener('click', function() {
-            body.classList.remove('g-sidenav-pinned');
-            body.classList.add('g-sidenav-hidden');
-        });
-    }
-    
-    // Auto show sidebar on desktop
-    if (window.innerWidth >= 1200) {
-        body.classList.add('g-sidenav-show', 'g-sidenav-pinned');
-    }
-});
 </script>
+
+<!-- Custom Scripts -->
+<script src="<?= _HOST_URL_TEMPLATES ?>/assets/js/custom.js"></script>
 
 <!-- Control Center for Material Dashboard -->
 <script src="<?= _HOST_URL_TEMPLATES ?>/assets/js/material-dashboard.min.js?v=3.2.0"></script>

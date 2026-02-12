@@ -89,16 +89,16 @@ $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Khách';
                     </ul>
                 </li>
                 <?php endif; ?>
-
+                
                 <li class="nav-item d-flex align-items-center">
                     <?php if ($user_role == 'guest'): ?>
                     <a href="<?= _HOST_URL ?>?module=auth&action=login"
                         class="nav-link text-body font-weight-bold px-0">
                         <i class="material-symbols-rounded">account_circle</i>
-                        <sp clas s="d-sm-inline d-none ms-1">Đăng nhập</sp an>
+                        <span class="d-sm-inline d-none ms-1">Khách</span>
                     </a>
                     <?php else: ?>
-                    <a href="<?= _HOST_URL ?>?module=auth&action=logout"
+                    <a href="<?= _HOST_URL ?>?module=profile"
                         class="nav-link text-body font-weight-bold px-0">
                         <i class="material-symbols-rounded">account_circle</i>
                         <span class="d-sm-inline d-none ms-1">

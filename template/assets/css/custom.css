@@ -1,0 +1,395 @@
+/* ============================================
+   SIDEBAR TOGGLE - FIXED VERSION
+   ============================================ */
+
+.sidenav {
+    transition: transform 0.3s ease-in-out !important;
+    transform: translateX(0);
+}
+
+/* Khi sidebar ẩn */
+body.sidebar-hidden .sidenav {
+    transform: translateX(-100%) !important;
+}
+
+/* Điều chỉnh main content */
+body:not(.sidebar-hidden) .main-content {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+body.sidebar-hidden .main-content {
+    margin-left: 0 !important;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+/* Đảm bảo sidebar luôn ở trên */
+.sidenav {
+    z-index: 1000 !important;
+}
+
+/* Main content và navbar */
+.main-content {
+    position: relative;
+    z-index: 1;
+}
+
+.navbar-main {
+    position: relative;
+    z-index: 2;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1199.98px) {
+    /* Trên mobile, mặc định ẩn sidebar */
+    .sidenav {
+        transform: translateX(-100%) !important;
+    }
+    
+    body:not(.sidebar-hidden) .main-content {
+        margin-left: 0 !important;
+    }
+}
+
+/* ============================================
+   SIDEBAR TOGGLE BUTTON
+   ============================================ */
+
+.btn-sidebar-toggle {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.sidenav-toggler-inner {
+    width: 20px;
+    height: 15px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidenav-toggler-line {
+    display: block;
+    height: 2px;
+    background-color: #344767;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+/* Animation khi sidebar ẩn */
+body.sidebar-hidden .sidenav-toggler-line:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+body.sidebar-hidden .sidenav-toggler-line:nth-child(2) {
+    opacity: 0;
+}
+
+body.sidebar-hidden .sidenav-toggler-line:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* ============================================
+   PROFILE PAGE FIX
+   ============================================ */
+
+.container-fluid, .container-xl {
+    position: relative;
+    z-index: 1;
+}
+
+.card {
+    position: relative;
+    z-index: 1;
+}
+
+/* ============================================
+   EVENT CARDS
+   ============================================ */
+
+.card[data-animation="true"] {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card[data-animation="true"]:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* ============================================
+   BADGES
+   ============================================ */
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    font-weight: 600;
+}
+
+/* ============================================
+   SEARCH BAR
+   ============================================ */
+
+.input-group-lg {
+    position: relative;
+}
+
+.input-group-lg .form-control {
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+}
+
+.input-group-lg .input-group-text {
+    padding: 0.75rem 1rem;
+}
+
+/* ============================================
+   TOAST NOTIFICATIONS
+   ============================================ */
+
+.toast-container {
+    z-index: 9999 !important;
+}
+
+.toast {
+    min-width: 300px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.toast-body {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+}
+
+.toast-body i {
+    font-size: 1.25rem;
+    margin-right: 0.5rem;
+}
+
+/* ============================================
+   ALERTS
+   ============================================ */
+
+.alert {
+    position: relative;
+    z-index: 100;
+    border-radius: 0.375rem;
+    padding: 1rem 1.25rem;
+}
+
+.alert i {
+    vertical-align: middle;
+}
+
+/* ============================================
+   MODAL
+   ============================================ */
+
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+.modal {
+    z-index: 1050 !important;
+}
+
+.modal-content {
+    border-radius: 0.75rem;
+}
+
+.modal-header {
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.25rem 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 1rem 1.5rem;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn {
+    font-weight: 600;
+    letter-spacing: 0.025em;
+}
+
+.btn i {
+    vertical-align: middle;
+    font-size: 1.125rem;
+}
+
+/* ============================================
+   FORMS
+   ============================================ */
+
+.form-control:focus {
+    border-color: #e91e63;
+    box-shadow: 0 0 0 0.2rem rgba(233, 30, 99, 0.25);
+}
+
+.form-select:focus {
+    border-color: #e91e63;
+    box-shadow: 0 0 0 0.2rem rgba(233, 30, 99, 0.25);
+}
+
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* ============================================
+   DROPDOWN
+   ============================================ */
+
+.dropdown-menu {
+    z-index: 1050;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* ============================================
+   BREADCRUMB
+   ============================================ */
+
+.breadcrumb {
+    margin-bottom: 1rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    font-size: 1.25rem;
+}
+
+/* ============================================
+   UTILITIES
+   ============================================ */
+
+.text-sm {
+    font-size: 0.875rem !important;
+}
+
+.text-xs {
+    font-size: 0.75rem !important;
+}
+
+.z-index-1 {
+    z-index: 1 !important;
+}
+
+.z-index-2 {
+    z-index: 2 !important;
+}
+
+.z-index-3 {
+    z-index: 3 !important;
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* ============================================
+   LOADING SPINNER
+   ============================================ */
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border-width: 0.25rem;
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+
+.text-muted i {
+    opacity: 0.5;
+}
+
+/* ============================================
+   RESPONSIVE UTILITIES
+   ============================================ */
+
+@media (max-width: 768px) {
+    .col-lg-4, .col-md-6 {
+        margin-bottom: 1rem;
+    }
+    
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    .btn-lg {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-header h4, .card-header h5 {
+        font-size: 1.125rem;
+    }
+    
+    .btn {
+        font-size: 0.875rem;
+    }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+    .sidenav,
+    .navbar,
+    .footer,
+    .btn,
+    .modal {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin: 0 !important;
+    }
+}

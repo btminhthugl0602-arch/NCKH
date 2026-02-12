@@ -15,8 +15,8 @@ const _DRIVER = 'mysql';
 const _DEBUG = true;
 
 //  Thiết lập host
-define('_HOST_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/NCKH');
-define('_HOST_URL_TEMPLATES', 'http://' . $_SERVER['HTTP_HOST'] . '/NCKH/template');
+define('_HOST_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/NCKH2');
+define('_HOST_URL_TEMPLATES', 'http://' . $_SERVER['HTTP_HOST'] . '/NCKH2/template');
 
 //  Thiết lập path
 define('_PATH_URL', __DIR__);
