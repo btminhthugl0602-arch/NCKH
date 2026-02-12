@@ -20,11 +20,23 @@ if (isset($_POST['create_event'])) {
 
     if (!empty($event_name)) {
 
-        // Demo: tạo ID giả
-        $new_event_id = rand(100,999);
+        $event_name = mysqli_real_escape_string($conn, $event_name);
 
-        header("Location: " . _HOST_URL . "?module=event&action=detail&id=" . $new_event_id);
-        exit();
+        $sql = "INSERT INTO sukien 
+        (tenSK, nguoiTao, ngayMoDangKy, ngayDongDangKy, ngayBatDau, isActive)
+        VALUES 
+        ('$event_name', 
+        ".$_SESSION['user_id'].", 
+        NOW(), 
+        NOW(), 
+        NOW(), 
+        1)";
+        mysqli_query($conn, $sql);
+
+        $new_event_id = mysqli_insert_id($conn);
+
+        header("Location: " . _HOST_URL . "?module=event");
+exit();
     }
 }
 layout('header', $data);
@@ -70,12 +82,14 @@ layout('sidebar');
 
         <?php
         // Demo dữ liệu (sau này lấy từ database)
-        $events = [
-            ['id' => 1, 'name' => 'Cuộc thi NCKH 2026', 'date' => '20/03/2026'],
-            ['id' => 2, 'name' => 'Olympic Tin học', 'date' => '15/04/2026'],
-            ['id' => 3, 'name' => 'Hội thảo AI', 'date' => '10/05/2026'],
-            ['id' => 4, 'name' => 'Cuộc thi Startup', 'date' => '01/06/2026'],
-        ];
+        $events = [];
+
+$sql = "SELECT * FROM sukien ORDER BY idSK DESC";
+$result = mysqli_query($conn, $sql);
+
+while ($row = mysqli_fetch_assoc($result)) {
+    $events[] = $row;
+}
 
         foreach ($events as $event):
         ?>
@@ -83,15 +97,18 @@ layout('sidebar');
         <div class="col-lg-3 col-md-6 mb-4">
             <div class="card h-100">
                 <div class="card-body">
-                    <h6 class="mb-2"><?= $event['name'] ?></h6>
-                    <p class="text-sm text-muted mb-3">
-                        Ngày tổ chức: <?= $event['date'] ?>
-                    </p>
+                    <h6 class="mb-2"><?= $event['tenSK'] ?></h6>
 
-                    <a href="<?= _HOST_URL ?>?module=event&action=detail&id=<?= $event['id'] ?>" 
-                       class="btn btn-sm bg-gradient-info w-100">
-                        Xem chi tiết
-                    </a>
+<p class="text-sm text-muted mb-3">
+    Ngày bắt đầu: <?= !empty($event['ngayBatDau']) 
+    ? date('d/m/Y', strtotime($event['ngayBatDau'])) 
+    : 'Chưa cấu hình'; ?>
+</p>
+
+<a href="<?= _HOST_URL ?>?module=event&action=edit&id=<?= $event['idSK'] ?>" 
+   class="btn btn-sm bg-gradient-info w-100">
+    Xem chi tiết
+</a>
                 </div>
             </div>
         </div>
