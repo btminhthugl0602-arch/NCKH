@@ -56,7 +56,7 @@ $active_page = 'users';
 $keyword = $_GET['keyword'] ?? '';
 ob_start();
 layout('header', $data);
-layout('sidebar', $data);
+layout('sidebar', ['active_page' => $active_page]);
 
 ?>
 

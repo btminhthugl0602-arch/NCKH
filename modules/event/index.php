@@ -40,7 +40,7 @@ exit();
     }
 }
 layout('header', $data);
-layout('sidebar', $data);
+layout('sidebar', ['active_page' => $active_page]);
 ?>
 
 <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
@@ -72,6 +72,9 @@ layout('sidebar', $data);
                     <label class="form-label">Tìm kiếm sự kiện...</label>
                     <input type="text" name="keyword" class="form-control"
                         value="<?= isset($_GET['keyword']) ? $_GET['keyword'] : '' ?>">
+                        <button class="btn bg-gradient-dark mb-0" type="submit">
+                    <i class="material-symbols-rounded">search</i>
+                </button>
                 </div>
             </form>
         </div>

@@ -9,24 +9,24 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
   exit();
 }
 
-
+$active_page = 'dashboard';
 
 $data = [
-  'page_title' => 'Trang chủ'
+  'page_title' => 'Dashboard'
 ];
 
 // Include header
 layout('header', $data);
 
 // Include sidebar
-layout('sidebar');
+layout('sidebar', ['active_page' => $active_page]);
 ?>
 
 <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
 
   <?php
   // Include navbar
-  layout('navbar');
+  layout('navbar', $data);
   ?>
 <style>
   .card.h-100 {
