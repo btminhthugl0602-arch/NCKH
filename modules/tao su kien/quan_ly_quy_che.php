@@ -1,6 +1,8 @@
 <?php
     require_once __DIR__ . '/base.php'; // Đảm bảo require file base
 
+    //hàm tạo quy chế mới nhưng chưa gắn điều kiện nào
+    //truyền vào $id_nguoi_thuc_hien để check quyền, $id_su_kien để liên kết (dù DB không có cột này), tên quy chế và mô tả
     function tao_quy_che(
         $conn,
         $id_nguoi_thuc_hien,
@@ -29,7 +31,8 @@
             'message' => 'Đã tạo quy chế'
         ];
     }
-
+    //hàm tao điều kiện đơn, chỉ tạo điều kiện đơn lẻ thông qua thao tác người dùng
+    //  truyền vào $id_nguoi_thuc_hien để check quyền, tên điều kiện, id thuộc tính cần kiểm tra, id toán tử so sánh, giá trị so sánh và mô tả
     function tao_dieu_kien_don(
         $conn,
         $id_nguoi_thuc_hien,
@@ -68,7 +71,8 @@
             return ['status' => false, 'message' => 'Lỗi tạo điều kiện'];
         }
     }
-
+    //Từ các điều kiện đơn, người dùng kết nối để thành tổ hợp
+    //truyền vào $id_nguoi_thuc_hien để check quyền, id điều kiện trái, id toán tử logic (AND/OR), id điều kiện phải, tên tổ hợp và mô tả
     function tao_to_hop_dieu_kien(
         $conn,
         $id_nguoi_thuc_hien,
@@ -108,6 +112,8 @@
         }
     }
 
+    //Sau khi có điều kiện đơn hoặc tổ hợp, gán điều kiện đó cho quy chế
+    //truyền vào $id_nguoi_thuc_hien để check quyền, $id_quy_che để xác định quy chế cần gán, $id_dieu_kien_cuoi là id điều kiện đơn hoặc tổ hợp đã tạo ở 2 hàm trên
     function gan_dieu_kien_cho_quy_che(
         $conn,
         $id_nguoi_thuc_hien,
@@ -136,6 +142,9 @@
 
         return ['status' => true, 'message' => 'Đã gán điều kiện cho quy chế'];
     }   
+    //kiểm tra điều kiện để xác định xem sản phẩm có đủ điều kiện tham gia vòng thi hay không
+    //truyền vào $id_dieu_kien là id điều kiện gốc (có thể là đơn hoặc tổ hợp), $du_lieu_dau_vao là mảng dữ liệu của sản phẩm cần kiểm tra (key là idThuocTinh, value là giá trị thực tế)
+    //Khi kiểm tra thì cần đệ quy để kiểm tra từng điều kiện con bên trong tổ hợp, nếu là điều kiện đơn thì kiểm tra trực tiếp
     function kiem_tra_dieu_kien($conn, $id_dieu_kien, $du_lieu_dau_vao) {
         $dk = truy_van_mot_ban_ghi($conn, 'dieukien', 'idDieuKien', $id_dieu_kien);
         if (!$dk) return false;
